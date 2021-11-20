@@ -14,6 +14,7 @@ type Sex struct {
 	Resolution string `json:"resolution"`
 	Signal string `json:"signal"`
 	Price string `json:"price"`
+	Price string `json:"algorithm"`
 }
 
 func main() {
