@@ -23,15 +23,29 @@ func main() {
 	app := gin.Default()
 
 	app.POST("/bekiringotu", func(c *gin.Context) {
-		var body Sex
-		err := c.BindJSON(&body)
-		if err != nil {
-			c.JSON(400,err)
-		}
-		if err = db.Create(&body).Error; err != nil {
-			c.Status(400)
-		}
-		c.JSON(200, body)
+		jsonData, _ := ioutil.ReadAll(c.Request.Body)
+		data := string(jsonData)
+		split := strings.Split(data, ",")
+		if len(split) == 6 {
+			date := time.Time(split[0])
+			coin := split[1]
+			resolutionNo := split[2]
+			resolution := split[3]
+			signal := split[4]
+			price := split[5]
+			obj := &Sex{
+				Date: date,
+				Coin: coin,
+				ResolutionNo: resolutionNo,
+				Resolution: resolution,
+				Signal: signal,
+				Price: price
+			}
+			if err = db.Create(&obj).Error; err != nil {
+				c.Status(400)
+			}
+			c.JSON(200, obj)
+		}	
 		
 	})
 
