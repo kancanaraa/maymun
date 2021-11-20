@@ -38,5 +38,5 @@ func main() {
 		c.JSON(200, gots)
 	})
 
-	app.Run(":3131")
+	app.Run(":80")
 }
