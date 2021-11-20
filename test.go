@@ -29,7 +29,7 @@ func main() {
 		jsonData, _ := ioutil.ReadAll(c.Request.Body)
 		data := string(jsonData)
 		split := strings.Split(data, ",")
-		if len(split) == 6 {
+		if len(split) == 7 {
 			date,_ := time.Parse(time.RFC3339, split[0])
 			coin := split[1]
 			i, _ := strconv.Atoi(split[2])
