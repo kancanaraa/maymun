@@ -35,7 +35,7 @@ func main() {
 		
 	})
 
-	app.GET("/bekiringotleri", func(c *gin.Context) {
+	app.GET("/test", func(c *gin.Context) {
 		c.JSON(200,"a")
 	})
 
