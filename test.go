@@ -1,0 +1,41 @@
+package main
+import ("github.com/gin-gonic/gin"
+"gorm.io/driver/sqlite"
+
+    "gorm.io/gorm"
+"time")
+
+type Sex struct {
+	Date time.Time `json:"date"`
+	Coin string `json:"coin"`
+	Resolution string `json:"resolution"`
+	Signal string `json:"signal"`
+	Price string `json:"price"`
+}
+
+func main() {
+	db, _ := gorm.Open(sqlite.Open("ovye.db"), &gorm.Config{})
+	db.AutoMigrate(&Sex{})
+	app := gin.Default()
+
+	app.POST("/bekiringotu", func(c *gin.Context) {
+		var body Sex
+		err := c.BindJSON(&body)
+		if err != nil {
+			c.JSON(400,err)
+		}
+		if err = db.Create(&body).Error; err != nil {
+			c.Status(400)
+		}
+		c.JSON(200, body)
+		
+	})
+
+	app.GET("/bekiringotleri", func(c *gin.Context) {
+		var gots []Sex
+		db.Find(&gots)
+		c.JSON(200, gots)
+	})
+
+	app.Run(":3131")
+}
