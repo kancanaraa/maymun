@@ -15,7 +15,10 @@ type Sex struct {
 }
 
 func main() {
-	db, _ := gorm.Open(sqlite.Open("ovye.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("ovye.db"), &gorm.Config{})
+	if err != nil {
+		panic("db conn err")
+	}
 	db.AutoMigrate(&Sex{})
 	app := gin.Default()
 
