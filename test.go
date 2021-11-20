@@ -14,7 +14,7 @@ type Sex struct {
 	Resolution string `json:"resolution"`
 	Signal string `json:"signal"`
 	Price string `json:"price"`
-	Price string `json:"algorithm"`
+	Algorithm string `json:"algorithm"`
 }
 
 func main() {
@@ -37,6 +37,7 @@ func main() {
 			resolution := split[3]
 			signal := split[4]
 			price := split[5]
+			algorithm := split[6]
 			obj := &Sex{
 				Date: date,
 				Coin: coin,
@@ -44,6 +45,7 @@ func main() {
 				Resolution: resolution,
 				Signal: signal,
 				Price: price,
+				Algorithm: algorithm,
 			}
 			if err = db.Create(&obj).Error; err != nil {
 				c.Status(400)
