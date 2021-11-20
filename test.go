@@ -28,9 +28,10 @@ func main() {
 		data := string(jsonData)
 		split := strings.Split(data, ",")
 		if len(split) == 6 {
-			date := time.Time(split[0])
+			date,_ := time.Parse(time.RFC3339, split[0])
 			coin := split[1]
-			resolutionNo := split[2]
+			i, _ := strconv.Atoi(split[2])
+			resolutionNo := i
 			resolution := split[3]
 			signal := split[4]
 			price := split[5]
