@@ -7,7 +7,7 @@ import ("github.com/gin-gonic/gin"
     "gorm.io/gorm"
 "time")
 
-type Sex struct {
+type CoinInfo struct {
 	Date time.Time `json:"date"`
 	Coin string `json:"coin"`
 	ResolutionNo int `json:"resolutionNo"`
@@ -18,14 +18,14 @@ type Sex struct {
 }
 
 func main() {
-	db, err := gorm.Open(sqlite.Open("ovye.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("coin.db"), &gorm.Config{})
 	if err != nil {
 		panic("db conn err")
 	}
-	db.AutoMigrate(&Sex{})
+	db.AutoMigrate(&CoinInfo{})
 	app := gin.Default()
 
-	app.POST("/bekiringotu", func(c *gin.Context) {
+	app.POST("/createCoinInfo", func(c *gin.Context) {
 		jsonData, _ := ioutil.ReadAll(c.Request.Body)
 		data := string(jsonData)
 		split := strings.Split(data, ",")
@@ -38,7 +38,7 @@ func main() {
 			signal := split[4]
 			price := split[5]
 			algorithm := split[6]
-			obj := &Sex{
+			obj := &CoinInfo{
 				Date: date,
 				Coin: coin,
 				ResolutionNo: resolutionNo,
@@ -55,8 +55,8 @@ func main() {
 		
 	})
 
-	app.GET("/bekiringotleri", func(c *gin.Context) {
-		var gots []Sex
+	app.GET("/getCoinInfos", func(c *gin.Context) {
+		var gots []CoinInfo
 		result := db.Find(&gots)
 		if result.Error != nil {
 			c.JSON(400, result.Error)
