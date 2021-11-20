@@ -6,9 +6,10 @@ import time
 import requests
 
 class Payload(object):
-    def __init__(self, date, coin, resolution, signal, price, algorithm):
+    def __init__(self, date, coin, resolutionNo,resolution, signal, price, algorithm):
         self.date = date
         self.coin = coin
+        self.resolutionNo = resolutionNo
         self.resolution = resolution
         self.signal = signal
         self.price = price
@@ -17,47 +18,50 @@ class Payload(object):
 ui = Ui_MainWindow()
 
 def as_payload(dct):
-    return Payload(dct["date"], dct["coin"], dct["resolution"], dct["signal"], dct["price"],dct["algorithm"])
+    return Payload(dct["date"], dct["coin"], dct["resolutionNo"],dct["resolution"], dct["signal"], dct["price"],dct["algorithm"])
 
-x = requests.get("http://35.157.241.163/bekiringotleri")
 
-payload = json.loads(x.text, object_hook=as_payload)
+
 # print(payload[-1].date)
+obj =     {"coinName":"",
+"Algorithm":"",
+"res1":"",
+"res2":"",
+"res3":"",
+"res4":"",
+"res5":"",
+"status":"",
+"jackpot":"",
+"price":"",
+}
 
+od = {}
 
 
 def loaddata():
-    coins=[{"coinName":"Sol",
-    "Algorithm":"xx",
-    "res1":"Buy",
-    "res2":"Buy",
-    "res3":"Buy",
-    "res4":"Buy",
-    "res5":"Buy",
-    "status":"Yes",
-    "jackpot":"Yes",
-    "price":"sdad"},
-    {"coinName":"Mana",
-    "Algorithm":"xx",
-    "res1":"Buy",
-    "res2":"Buy",
-    "res3":"Buy",
-    "res4":"Buy",
-    "res5":"Buy",
-    "status":"Yes",
-    "jackpot":"Yes",
-    "price":"ss2212"},
-    {"coinName":payload[-1].coin,
-    "Algorithm":payload[-1].algorithm,
-    "res1":"Buy",
-    "res2":"Buy",
-    "res3":"Buy",
-    "res4":"Buy",
-    "res5":"Buy",
-    "status":"Yes",
-    "jackpot":"Yes",
-    "price":"sdad"
-    }]
+    global obj
+    x = requests.get("http://35.157.241.163/getCoinInfos")
+
+    payload = json.loads(x.text, object_hook=as_payload)
+    coin = payload[-1].coin
+    if (coin not in od):
+        od[coin] = {
+            "coinName":"",
+            "Algorithm":"",
+            "res1":"",
+            "res2":"",
+            "res3":"",
+            "res4":"",
+            "res5":"",
+            "status":"",
+            "jackpot":"",
+            "price":"",
+        }
+    od[coin]["coinName"] = coin
+    od[coin]["Algorithm"] = payload[-1].algorithm
+    od[coin]["res"+str(payload[-1].resolutionNo)] = payload[-1].signal
+    od[coin]["price"] = payload[-1].price
+    coins=list(od.values())
     row=0
     ui.coinTable.setRowCount(len(coins))
     col_coinName=0
@@ -111,5 +115,8 @@ if __name__ == "__main__":
     btcdata()
     loaddata()
     MainWindow.show()
+    qtimer = QtCore.QTimer()
+    qtimer.timeout.connect(loaddata)
+    qtimer.start(1000)
     sys.exit(app.exec_())
 

@@ -8,6 +8,7 @@ import ("github.com/gin-gonic/gin"
 "time")
 
 type CoinInfo struct {
+	Id uint `json:"id"`
 	Date time.Time `json:"date"`
 	Coin string `json:"coin"`
 	ResolutionNo int `json:"resolutionNo"`
@@ -58,6 +59,15 @@ func main() {
 	app.GET("/getCoinInfos", func(c *gin.Context) {
 		var gots []CoinInfo
 		result := db.Find(&gots)
+		if result.Error != nil {
+			c.JSON(400, result.Error)
+		}
+		c.JSON(200, gots)
+	})
+
+	app.GET("/getCoinInfosTake", func(c *gin.Context) {
+		var gots []CoinInfo
+		result := db.Order("id desc").Limit(10).Find(&gots)
 		if result.Error != nil {
 			c.JSON(400, result.Error)
 		}
