@@ -8,6 +8,7 @@ import ("github.com/gin-gonic/gin"
 type Sex struct {
 	Date time.Time `json:"date"`
 	Coin string `json:"coin"`
+	ResolutionNo uint `json:"resolutionNo"`
 	Resolution string `json:"resolution"`
 	Signal string `json:"signal"`
 	Price string `json:"price"`
