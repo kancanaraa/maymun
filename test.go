@@ -39,7 +39,7 @@ func main() {
 				ResolutionNo: resolutionNo,
 				Resolution: resolution,
 				Signal: signal,
-				Price: price
+				Price: price,
 			}
 			if err = db.Create(&obj).Error; err != nil {
 				c.Status(400)
