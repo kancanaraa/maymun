@@ -35,8 +35,13 @@ func main() {
 		
 	})
 
-	app.GET("/test", func(c *gin.Context) {
-		c.JSON(200,"a")
+	app.GET("/bekiringotleri", func(c *gin.Context) {
+		var gots []Sex
+		result := db.Find(&gots)
+		if result.Error != nil {
+			c.JSON(400, result.Error)
+		}
+		c.JSON(200, gots)
 	})
 
 	app.Run(":80")
