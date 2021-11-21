@@ -4,6 +4,8 @@ from tradingchecker_v01 import Ui_MainWindow
 import json;
 import time
 import requests
+import datetime
+
 
 class Payload(object):
     def __init__(self, date, coin, resolutionNo,resolution, signal, price, algorithm):
@@ -38,10 +40,19 @@ obj =     {"coinName":"",
 od = {}
 
 
+def deltatime():
+    gTime=time.gmtime()
+    gloTime=time.strftime("%Y-%m-%dT%H:%M:%SZ", gTime)
+
 def loaddata():
     global obj
     x = requests.get("http://35.157.241.163/getCoinInfosTake")
     payload = json.loads(x.text, object_hook=as_payload)
+
+    gTime=time.gmtime()
+    gloTime=time.strftime("%Y-%m-%dT%H:%M:%SZ", gTime)
+
+    # print (time.strftime("%H:%M:%S", t))
     for coinInfo in reversed(payload):
         coin = coinInfo.coin
         if (coin not in od):
@@ -53,6 +64,11 @@ def loaddata():
                 "res3":"",
                 "res4":"",
                 "res5":"",
+                "res1_date":"",
+                "res2_date":"",
+                "res3_date":"",
+                "res4_date":"",
+                "res5_date":"",
                 "status":"",
                 "jackpot":"",
                 "price":"",
@@ -60,10 +76,25 @@ def loaddata():
         od[coin]["coinName"] = coin
         od[coin]["Algorithm"] = coinInfo.algorithm
         od[coin]["res"+str(coinInfo.resolutionNo)] = coinInfo.signal
+        # od[coin]["res"+str(coinInfo.resolutionNo)+"_date"] = coinInfo.date
         od[coin]["price"] = coinInfo.price
+        coinDate=datetime.datetime(*time.strptime(coinInfo.date, "%Y-%m-%dT%H:%M:%SZ")[:6])
+        globTime=datetime.datetime(*time.strptime(gloTime, "%Y-%m-%dT%H:%M:%SZ")[:6])
+        coinTime=coinDate
+        globalTime=globTime
+        # print(type(coinTime))
+        # print(coinTime)
+        # print(type(globalTime.time()))
+        # print(globalTime.time())
+        # od[coin]["res"+str(coinInfo.resolutionNo)+"_date"] = str(coinDate.time())
+        if(coinTime):
+            timeDif=round((globalTime-coinTime).total_seconds()/60.0,2)
+            print(timeDif)
+            od[coin]["res"+str(coinInfo.resolutionNo)+"_date"] = str(timeDif)
+
     coins=list(od.values())
     row=0
-    ui.coinTable.setRowCount(len(coins))
+    ui.coinTable.setRowCount(2*len(coins))
     col_coinName=0
     col_Algorithm=1
     col_res1=2
@@ -75,6 +106,19 @@ def loaddata():
     col_jackpot=8
     col_price=9
     for coin in coins:
+        ui.coinTable.setItem(row, col_coinName, QtWidgets.QTableWidgetItem(coin["coinName"]+" Date"))
+        ui.coinTable.setItem(row, col_Algorithm, QtWidgets.QTableWidgetItem(coin["Algorithm"]))
+        ui.coinTable.setItem(row, col_res1, QtWidgets.QTableWidgetItem(coin["res1_date"]))
+        ui.coinTable.setItem(row, col_res2, QtWidgets.QTableWidgetItem(coin["res2_date"]))
+        ui.coinTable.setItem(row, col_res3, QtWidgets.QTableWidgetItem(coin["res3_date"]))
+        ui.coinTable.setItem(row, col_res4, QtWidgets.QTableWidgetItem(coin["res4_date"]))
+        ui.coinTable.setItem(row, col_res5, QtWidgets.QTableWidgetItem(coin["res5_date"]))
+        ui.coinTable.setItem(row, col_status, QtWidgets.QTableWidgetItem(coin["status"]))
+        ui.coinTable.setItem(row, col_jackpot, QtWidgets.QTableWidgetItem(coin["jackpot"]))
+        # ui.coinTable.setItem(row, col_price, QtWidgets.QTableWidgetItem(coin["price"]))
+        row=row+1
+
+
         ui.coinTable.setItem(row, col_coinName, QtWidgets.QTableWidgetItem(coin["coinName"]))
         ui.coinTable.setItem(row, col_Algorithm, QtWidgets.QTableWidgetItem(coin["Algorithm"]))
         ui.coinTable.setItem(row, col_res1, QtWidgets.QTableWidgetItem(coin["res1"]))

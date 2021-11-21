@@ -1,11 +1,13 @@
 package main
-import ("github.com/gin-gonic/gin"
-"gorm.io/driver/sqlite"
-"io/ioutil"
-"strings"
-"strconv"
+import (
+	"github.com/gin-gonic/gin"
+	"gorm.io/driver/sqlite"
+	"io/ioutil"
+	"strings"
+	"strconv"
     "gorm.io/gorm"
-"time")
+	"time"
+)
 
 type CoinInfo struct {
 	Id uint `json:"id"`
@@ -65,9 +67,10 @@ func main() {
 		c.JSON(200, gots)
 	})
 
-	app.GET("/getCoinInfosTake", func(c *gin.Context) {
+	app.GET("/getCoinInfosTake/:take", func(c *gin.Context) {
+		take := c.Param("take")
 		var gots []CoinInfo
-		result := db.Order("id desc").Limit(10).Find(&gots)
+		result := db.Order("id desc").Limit(take).Find(&gots)
 		if result.Error != nil {
 			c.JSON(400, result.Error)
 		}
