@@ -70,7 +70,7 @@ func main() {
 	app.GET("/getCoinInfosTake/:take", func(c *gin.Context) {
 		take := c.Param("take")
 		var gots []CoinInfo
-		result := db.Order("id desc").Limit(take).Find(&gots)
+		result := db.Order("id desc").Limit(strconv.Atoi(take)).Find(&gots)
 		if result.Error != nil {
 			c.JSON(400, result.Error)
 		}
